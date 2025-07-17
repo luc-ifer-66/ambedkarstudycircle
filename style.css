@@ -762,3 +762,8 @@ footer p {
         padding: 1.5rem;
     }
 }
+
+/* Font Awesome Icon Color */
+.fa, .fa-solid, .fa-brands, .fas, .fab {
+    color: #4A90E2;
+}

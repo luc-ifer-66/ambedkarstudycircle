@@ -64,13 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Add click handlers for download buttons
-    document.querySelectorAll('.download-btn').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            alert('Download functionality will be implemented soon!');
-        });
-    });
+    // Removed custom download button interception so links behave normally
 
     // Add animation on scroll
     function animateOnScroll() {

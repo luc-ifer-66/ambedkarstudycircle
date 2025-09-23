@@ -111,6 +111,21 @@ body {
     color: #ffffff;
 }
 
+/* Hero logo image above title */
+.hero-logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.hero-logo img {
+    height: 205px;
+    width: 205px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 6px 22px rgba(0,0,0,0.25);
+}
+
 .tagline {
     font-size: 1.3rem;
     color: #ffffff;
@@ -781,6 +796,10 @@ footer p {
 
     .logo img {
         height: 36px;
+    }
+    .hero-logo img {
+        height: 64px;
+        width: 64px;
     }
     
     .page-header h1 {

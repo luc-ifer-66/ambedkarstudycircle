@@ -83,6 +83,88 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('scroll', animateOnScroll);
     animateOnScroll(); // Run on page load
 
+    // Firebase Events Loading
+    async function loadEvents() {
+        try {
+            // Check if Firebase is available
+            if (!window.db) {
+                console.error('Firebase not initialized');
+                showNoEvents();
+                return;
+            }
+
+            const eventsRef = collection(window.db, 'events');
+            const q = query(eventsRef, orderBy('date', 'desc'));
+            const querySnapshot = await getDocs(q);
+            
+            const events = [];
+            querySnapshot.forEach((doc) => {
+                events.push({ id: doc.id, ...doc.data() });
+            });
+
+            if (events.length === 0) {
+                showNoEvents();
+            } else {
+                displayEvents(events);
+            }
+        } catch (error) {
+            console.error('Error loading events:', error);
+            showNoEvents();
+        }
+    }
+
+    function showNoEvents() {
+        document.getElementById('loading-events').style.display = 'none';
+        document.getElementById('no-events').style.display = 'block';
+        document.getElementById('events-grid').style.display = 'none';
+    }
+
+    function displayEvents(events) {
+        const eventsGrid = document.getElementById('events-grid');
+        const loadingEvents = document.getElementById('loading-events');
+        const noEvents = document.getElementById('no-events');
+
+        loadingEvents.style.display = 'none';
+        noEvents.style.display = 'none';
+        eventsGrid.style.display = 'grid';
+
+        eventsGrid.innerHTML = events.map(event => `
+            <div class="event-card">
+                <div class="event-image">
+                    <img src="${event.imageUrl || 'https://via.placeholder.com/400x200/1A2333/FFB15E?text=Event+Image'}" alt="${event.title}">
+                </div>
+                <div class="event-content">
+                    <h3>${event.title}</h3>
+                    <div class="event-date">
+                        <i class="fas fa-calendar-alt"></i> ${formatDate(event.date)}
+                        ${event.time ? `<br><i class="fas fa-clock"></i> ${event.time}` : ''}
+                        ${event.location ? `<br><i class="fas fa-map-marker-alt"></i> ${event.location}` : ''}
+                    </div>
+                    <p>${event.description}</p>
+                    ${event.registrationUrl ? `<a href="${event.registrationUrl}" class="register-btn" target="_blank" rel="noopener noreferrer">Register Now</a>` : ''}
+                </div>
+            </div>
+        `).join('');
+
+        // Re-run animation for new elements
+        setTimeout(animateOnScroll, 100);
+    }
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    }
+
+    // Load events when page loads
+    if (window.location.pathname.includes('events.html')) {
+        // Wait for Firebase to initialize
+        setTimeout(loadEvents, 1000);
+    }
+
     // Add CSS animation class
     const style = document.createElement('style');
     style.textContent = `

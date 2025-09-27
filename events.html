@@ -10,6 +10,33 @@
     <link rel="stylesheet" href="style.css">
     <!-- Font Awesome Sharp Solid CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, getDocs, orderBy, query } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        
+        // Your Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyD3_FTSMng4NsmYMGRHaI5dHrK1vnuP_DE",
+            authDomain: "ambedkar-study-circle-events.firebaseapp.com",
+            projectId: "ambedkar-study-circle-events",
+            storageBucket: "ambedkar-study-circle-events.firebasestorage.app",
+            messagingSenderId: "177204751451",
+            appId: "1:177204751451:web:78919824bf89bee4a2a37e",
+            measurementId: "G-Y52XH9TCJ0"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Make Firebase available globally
+        window.db = db;
+        window.getDocs = getDocs;
+        window.collection = collection;
+        window.orderBy = orderBy;
+        window.query = query;
+    </script>
 </head>
 <body>
     <header>
@@ -46,13 +73,34 @@
         </section>
 
         <hr class="section-divider">
-        <div class="coming-soon">
-            <div class="icon">
-                <i class="fas fa-hat-wizard"></i>
+        
+        <!-- Events Section -->
+        <section class="events-section">
+            <div class="container">
+                <!-- Loading State -->
+                <div id="loading-events" class="coming-soon">
+                    <div class="icon">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                    <h2>Loading Events...</h2>
+                    <p>Please wait while we fetch the latest events.</p>
+                </div>
+
+                <!-- No Events State -->
+                <div id="no-events" class="coming-soon" style="display: none;">
+                    <div class="icon">
+                        <i class="fas fa-calendar-plus"></i>
+                    </div>
+                    <h2>No Events Available</h2>
+                    <p>We will be conducting events soon. Stay tuned for updates!</p>
+                </div>
+
+                <!-- Events Grid -->
+                <div id="events-grid" class="events-grid" style="display: none;">
+                    <!-- Events will be dynamically loaded here -->
+                </div>
             </div>
-            <h2>Events are Coming Soon</h2>
-            <p>We will be conducting a lot of events for you all. In the meantime, stay tuned, regularly visit the website to find registration and event details.</p>
-        </div>
+        </section>
     </main>
 
     <footer>

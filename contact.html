@@ -106,15 +106,97 @@
     </main>
 
     <footer>
-        <div class="social-bar">
-            <a href="https://www.instagram.com/ambedkarstudycircleglct/" class="social-icon" aria-label="Instagram" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-instagram"></i></a>
-            <a href="mailto:ambedkarstudycircle321@gmail.com" class="social-icon" aria-label="Gmail" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-envelope"></i></a>
-            <a href="https://www.youtube.com/@AmbedkarStudycircle" class="social-icon" aria-label="Youtube" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-youtube"></i></a>
-            <a href="https://t.me/+AKmk7ZM2ZrYxZmM9" class="social-icon" aria-label="Telegram" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-telegram"></i></a>
+        <div class="social-bar" id="socialBar">
+            <!-- Social icons will be loaded here -->
         </div>
         <p>&copy; 2025 KSU GLCT. All rights reserved.</p>
     </footer>
 
     <script src="script.js"></script>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        // Firebase config (same as event-dashboard.html)
+        const firebaseConfig = {
+            apiKey: "AIzaSyD3_FTSMng4NsmYMGRHaI5dHrK1vnuP_DE",
+            authDomain: "ambedkar-study-circle-events.firebaseapp.com",
+            projectId: "ambedkar-study-circle-events",
+            storageBucket: "ambedkar-study-circle-events.firebasestorage.app",
+            messagingSenderId: "177204751451",
+            appId: "1:177204751451:web:78919824bf89bee4a2a37e",
+            measurementId: "G-Y52XH9TCJ0"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Helper: Social icon map
+        const socialIcons = {
+            Instagram: 'fa-brands fa-instagram',
+            Telegram: 'fa-brands fa-telegram',
+            Gmail: 'fa-solid fa-envelope',
+            Youtube: 'fa-brands fa-youtube',
+            Email: 'fa-solid fa-envelope',
+        };
+
+        // Render socials (top cards and footer)
+        async function renderSocials() {
+            const socialsSnap = await getDocs(collection(db, 'socials'));
+            const socials = socialsSnap.docs.map(doc => doc.data());
+            // Top cards
+            const methods = document.querySelector('.contact-methods');
+            if (methods) {
+                methods.innerHTML = socials.map(s => `
+                    <div class="contact-card">
+                        <div class="contact-icon"><i class="${socialIcons[s.type] || 'fa-solid fa-link'}"></i></div>
+                        <h3>${s.type}</h3>
+                        <p>${getSocialDescription(s.type)}</p>
+                        <a href="${s.url}" class="contact-link" target="_blank" rel="noopener noreferrer">${getSocialLabel(s.type)}</a>
+                    </div>
+                `).join('');
+            }
+            // Footer
+            const socialBar = document.getElementById('socialBar');
+            if (socialBar) {
+                socialBar.innerHTML = socials.map(s => `
+                    <a href="${s.url}" class="social-icon" aria-label="${s.type}" target="_blank" rel="noopener noreferrer"><i class="${socialIcons[s.type] || 'fa-solid fa-link'}"></i></a>
+                `).join('');
+            }
+        }
+        function getSocialDescription(type) {
+            switch(type) {
+                case 'Instagram': return 'Follow us on Instagram for updates and announcements';
+                case 'Telegram': return 'Join our Telegram for instant communication and regular updates';
+                case 'Gmail': return 'Contact us via Email for detailed inquiries about our materials';
+                case 'Youtube': return 'Watch our videos and events on YouTube';
+                default: return '';
+            }
+        }
+        function getSocialLabel(type) {
+            switch(type) {
+                case 'Instagram': return 'Ambedkar Study Circle GLCT';
+                case 'Telegram': return 'Join our group';
+                case 'Gmail': return 'Email Us';
+                case 'Youtube': return 'YouTube Channel';
+                default: return 'Visit';
+            }
+        }
+        // Render contacts
+        async function renderContacts() {
+            const contactsSnap = await getDocs(collection(db, 'contacts'));
+            const contacts = contactsSnap.docs.map(doc => doc.data());
+            const grid = document.querySelector('.contact-grid');
+            if (grid) {
+                grid.innerHTML = contacts.map(c => `
+                    <div class="contact-person">
+                        <p><strong>Name:</strong> ${c.name}</p>
+                        <p><strong>Phone:</strong> ${c.phone}</p>
+                    </div>
+                `).join('');
+            }
+        }
+        // On load
+        renderSocials();
+        renderContacts();
+    </script>
 </body>
 </html>

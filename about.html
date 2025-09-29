@@ -83,5 +83,49 @@
     </footer>
 
     <script src="script.js"></script>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        // Firebase config (same as other pages)
+        const firebaseConfig = {
+            apiKey: "AIzaSyD3_FTSMng4NsmYMGRHaI5dHrK1vnuP_DE",
+            authDomain: "ambedkar-study-circle-events.firebaseapp.com",
+            projectId: "ambedkar-study-circle-events",
+            storageBucket: "ambedkar-study-circle-events.firebasestorage.app",
+            messagingSenderId: "177204751451",
+            appId: "1:177204751451:web:78919824bf89bee4a2a37e",
+            measurementId: "G-Y52XH9TCJ0"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const aboutContent = document.querySelector('.about-content .container');
+        aboutContent.innerHTML = '<div class="loading">Loading...</div>';
+        try {
+            const snap = await getDocs(collection(db, 'about'));
+            const aboutDocs = {};
+            snap.forEach(doc => { aboutDocs[doc.id] = doc.data(); });
+            aboutContent.innerHTML = `
+                <div class="about-card">
+                    <h2>Our Mission</h2>
+                    <p>${aboutDocs.mission?.text || ''}</p>
+                </div>
+                <div class="about-card">
+                    <h2>Our Vision</h2>
+                    <p>${aboutDocs.vision?.text || ''}</p>
+                </div>
+                <div class="about-card">
+                    <h2>What We Offer</h2>
+                    <p>${aboutDocs.offer?.text || ''}</p>
+                </div>
+                <div class="about-card">
+                    <h2>Our Values</h2>
+                    <p>${aboutDocs.values?.text || ''}</p>
+                </div>
+            `;
+        } catch (err) {
+            aboutContent.innerHTML = `<div class='error'>${err.message}</div>`;
+        }
+    </script>
 </body>
 </html>

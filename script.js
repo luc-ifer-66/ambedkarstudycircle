@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         ${event.location ? `<br><i class="fas fa-map-marker-alt"></i> ${event.location}` : ''}
                     </div>
                     <p>${event.description}</p>
-                    ${event.registrationUrl ? `<a href="${event.registrationUrl}" class="register-btn" target="_blank" rel="noopener noreferrer">Register Now</a>` : ''}
+                    ${event.registrationUrl ? `<a href="${event.registrationUrl}" class="register-btn" target="_blank" rel="noopener noreferrer"><i class='fas fa-sign-in-alt'></i> Register Now</a>` : ''}
                 </div>
             </div>
         `).join('');
